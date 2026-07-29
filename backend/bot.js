@@ -102,7 +102,7 @@ bot.onText(/\/start/, (msg) => {
       inline_keyboard: [
         [
           {
-            text: 'OPEN',
+            text: '🏠 Uy Chinoz',
             web_app: { url: webAppUrl }
           }
         ],
@@ -116,7 +116,7 @@ bot.onText(/\/start/, (msg) => {
     }
   };
 
-  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun OPEN tugmasini bosing:', keyboard);
+  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini bosing:', keyboard);
 });
 
 // Xatolikni qayta ishlash
