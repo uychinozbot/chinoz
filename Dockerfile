@@ -21,11 +21,6 @@ COPY frontend ./frontend
 # Expose port
 EXPOSE 3000
 
-# Set environment variables
-ENV PORT=3000
-ENV TELEGRAM_BOT_TOKEN=${TELEGRAM_BOT_TOKEN}
-ENV WEB_APP_URL=${WEB_APP_URL}
-
 # Start server
 WORKDIR /app/backend
 CMD ["npm", "start"]
