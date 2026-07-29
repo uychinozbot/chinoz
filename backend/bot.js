@@ -110,8 +110,17 @@ bot.on('callback_query', (query) => {
   const data = query.data;
 
   if (data === 'start_bot') {
-    bot.answerCallbackQuery(query.id, { text: 'Bot ishga tushdi!' });
-    bot.sendMessage(chatId, '✅ Bot muvaffaqiyatli ishga tushdi!\n\nEndi e\'lon qo\'shishingiz mumkin.');
+    bot.answerCallbackQuery(query.id);
+
+    const webAppKeyboard = {
+      inline_keyboard: [
+      [{ text: '🏠 E\'lon qo\'shish', web_app: { url: config.WEB_APP_URL } }]
+      ]
+    };
+
+    bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun tugmani bosing:', {
+      reply_markup: webAppKeyboard
+    });
   }
 });
 
