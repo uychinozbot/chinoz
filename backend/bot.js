@@ -110,7 +110,7 @@ bot.onText(/\/start/, (msg) => {
     }
   };
 
-  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini Bosing!', keyboard);
+  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini bosing:', keyboard);
 });
 
 // Xatolikni qayta ishlash
