@@ -93,35 +93,15 @@ module.exports = { bot, postToChannel };
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
 
-  const keyboard = {
+  const webAppKeyboard = {
     inline_keyboard: [
-      [{ text: 'Uy Chinoz', callback_data: 'start_bot' }]
+      [{ text: '🏠 E\'lon qo\'shish', web_app: { url: config.WEB_APP_URL } }]
     ]
   };
 
-  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini Bosing!', {
-    reply_markup: keyboard
+  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun tugmani bosing:', {
+    reply_markup: webAppKeyboard
   });
-});
-
-// Tugma bosilganda
-bot.on('callback_query', (query) => {
-  const chatId = query.message.chat.id;
-  const data = query.data;
-
-  if (data === 'start_bot') {
-    bot.answerCallbackQuery(query.id);
-
-    const webAppKeyboard = {
-      inline_keyboard: [
-      [{ text: '🏠 E\'lon qo\'shish', web_app: { url: config.WEB_APP_URL } }]
-      ]
-    };
-
-    bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun tugmani bosing:', {
-      reply_markup: webAppKeyboard
-    });
-  }
 });
 
 // Xatolikni qayta ishlash
