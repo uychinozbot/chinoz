@@ -3,8 +3,8 @@ const API_BASE = '/api/houses';
 
 // URL parametrlari
 const urlParams = getUrlParams();
-const userId = urlParams.user_id;
-const username = urlParams.username;
+const userId = urlParams.user_id || window.telegramUser?.id;
+const username = urlParams.username || window.telegramUser?.username;
 
 // DOM elementlari
 const addHouseForm = document.getElementById('add-house-form');
