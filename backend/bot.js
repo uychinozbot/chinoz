@@ -92,31 +92,8 @@ module.exports = { bot, postToChannel };
 // /start komandasi
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const userId = msg.from.id;
-  const username = msg.from.username || 'Foydalanuvchi';
 
-  const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
-
-  const keyboard = {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: '🏠 Uy Chinoz',
-            web_app: { url: webAppUrl }
-          }
-        ],
-        [
-          {
-            text: '📢 Kanalga Kirish',
-            url: `https://t.me/${config.CHANNEL_USERNAME.replace('@', '')}`
-          }
-        ]
-      ]
-    }
-  };
-
-  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini bosing:', keyboard);
+  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini Bosing!');
 });
 
 // Xatolikni qayta ishlash
