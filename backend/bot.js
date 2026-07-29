@@ -92,25 +92,27 @@ module.exports = { bot, postToChannel };
 // /start komandasi
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
-  const userId = msg.from.id;
-  const username = msg.from.username || 'Foydalanuvchi';
-
-  const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
 
   const keyboard = {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: '🏠 Uy Chinoz',
-            web_app: { url: webAppUrl }
-          }
-        ]
-      ]
-    }
+    inline_keyboard: [
+      [{ text: 'Uy Chinoz', callback_data: 'start_bot' }]
+    ]
   };
 
-  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini Bosing!', keyboard);
+  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun Uy Chinoz tugmasini Bosing!', {
+    reply_markup: keyboard
+  });
+});
+
+// Tugma bosilganda
+bot.on('callback_query', (query) => {
+  const chatId = query.message.chat.id;
+  const data = query.data;
+
+  if (data === 'start_bot') {
+    bot.answerCallbackQuery(query.id, { text: 'Bot ishga tushdi!' });
+    bot.sendMessage(chatId, '✅ Bot muvaffaqiyatli ishga tushdi!\n\nEndi e\'lon qo\'shishingiz mumkin.');
+  }
 });
 
 // Xatolikni qayta ishlash
