@@ -92,10 +92,14 @@ module.exports = { bot, postToChannel };
 // /start komandasi
 bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
+  const userId = msg.from.id;
+  const username = msg.from.username;
+
+  const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}`;
 
   const webAppKeyboard = {
     inline_keyboard: [
-      [{ text: '🏠 E\'lon qo\'shish', web_app: { url: config.WEB_APP_URL } }]
+      [{ text: '🏠 E\'lon qo\'shish', web_app: { url: webAppUrl } }]
     ]
   };
 
