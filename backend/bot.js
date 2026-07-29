@@ -6,17 +6,6 @@ const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
 
 console.log('Bot ishga tushdi...');
 
-// Bot commands sozlash
-bot.setMyCommands([
-  { command: 'start', description: '🚀 Boshlash' },
-  { command: 'add', description: '➕ E\'lon qo\'shish' },
-  { command: 'help', description: '❓ Yordam' }
-]).then(() => {
-  console.log('Bot commands sozlandi');
-}).catch(err => {
-  console.error('Commands sozlashda xatolik:', err);
-});
-
 // Queue tizimi - xabarlar aralashib ketmasligi uchun
 let postQueue = [];
 let isProcessing = false;
@@ -55,7 +44,7 @@ async function postToChannelInternal(house) {
     
     const detailsCaption = `📢 *${house.title}*
 
-💰 Narx: ${house.currency === 'USD' ? '$' : ''}${house.price}${house.currency === 'UZS' ? " so'm" : ''}${house.city ? `\n📍 Shahar: ${house.city}` : ''}${house.location_type ? `\n🏢 Joylashuv: ${house.location_type === 'shahar-atrofi' ? 'Shaxar atrofi' : house.location_type}` : ''}${house.house_type ? `\n🏠 Turi: ${house.house_type === 'uy' ? 'Dom' : house.house_type}` : ''}${house.area ? `\n📐 Maydon: ${house.area} m²` : ''}${house.rooms ? `\n🏠 Xonalar: ${house.rooms}` : ''}${house.floor ? `\n🏢 Qavat ${house.floor} Umumiy Qavat ${house.total_floors}` : ''}${house.condition ? `\n🔧 Holati: ${house.condition}` : ''}${house.furniture ? `\n🪑 Uy jihozlar: ${house.furniture}` : ''}${house.utilities ? `\n⚡ Komunal: ${house.utilities}` : ''}${house.year_built ? `\n📅 Qurilgan yili: ${house.year_built}` : ''}${house.garage ? `\n🚗 Garaj: ${house.garage === 'bor' ? 'Bor' : 'Yo\'q'}` : ''}${house.description ? `\n📝 Tavsif: ${house.description}` : ''}${house.created_at ? `\n📅 Joylangan: ${new Date(house.created_at).toLocaleDateString('uz-UZ')} ${new Date(house.created_at).toLocaleTimeString('uz-UZ')}` : ''}${house.expiration_date ? `\n⏰ Tugash sanasi: ${new Date(house.expiration_date).toLocaleDateString('uz-UZ')}` : '\n⏰ Muddati: Cheksiz'}
+💰 Narx: ${house.currency === 'USD' ? '$' : ''}${house.price}${house.currency === 'UZS' ? " so'm" : ''}${house.address ? `\n📍 Manzil: ${house.address}` : ''}${house.location_type ? `\n🏢 Joylashuv: ${house.location_type === 'shahar-atrofi' ? 'Shaxar atrofi' : house.location_type}` : ''}${house.house_type ? `\n🏠 Turi: ${house.house_type === 'uy' ? 'Dom' : house.house_type}` : ''}${house.area ? `\n📐 Maydon: ${house.area} m²` : ''}${house.rooms ? `\n🏠 Xonalar: ${house.rooms}` : ''}${house.floor ? `\n🏢 Qavat ${house.floor} Umumiy Qavat ${house.total_floors}` : ''}${house.condition ? `\n🔧 Holati: ${house.condition}` : ''}${house.furniture ? `\n🪑 Uy jihozlar: ${house.furniture}` : ''}${house.utilities ? `\n⚡ Komunal: ${house.utilities}` : ''}${house.year_built ? `\n📅 Qurilgan yili: ${house.year_built}` : ''}${house.garage ? `\n🚗 Garaj: ${house.garage === 'bor' ? 'Bor' : 'Yo\'q'}` : ''}${house.description ? `\n📝 Tavsif: ${house.description}` : ''}${house.created_at ? `\n📅 Joylangan: ${new Date(house.created_at).toLocaleDateString('uz-UZ')} ${new Date(house.created_at).toLocaleTimeString('uz-UZ')}` : ''}${house.expiration_date ? `\n⏰ Tugash sanasi: ${new Date(house.expiration_date).toLocaleDateString('uz-UZ')}` : '\n⏰ Muddati: Cheksiz'}
 
 📞 Telefon: [${house.phone}](tel:${house.phone})
 👤 E'lon qo'shgan: @${house.telegram_username || house.username || 'Foydalanuvchi'}`;
@@ -105,23 +94,15 @@ bot.onText(/\/start/, (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   const username = msg.from.username || 'Foydalanuvchi';
-  
-  const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
-  
-  const welcomeMessage = `
-📢 *E'lon berish Xush Kelibsiz!*
 
-📌 *Xususiyatlar:*
-• E'lon qo'shish va kanalga avtomatik yuborish
-• Barcha e'lonlar kanalda ko'rinadi
-  `;
-  
+  const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
+
   const keyboard = {
     reply_markup: {
       inline_keyboard: [
         [
           {
-            text: '🚀 E\'lon Qo\'shish',
+            text: 'OPEN',
             web_app: { url: webAppUrl }
           }
         ],
@@ -130,244 +111,12 @@ bot.onText(/\/start/, (msg) => {
             text: '📢 Kanalga Kirish',
             url: `https://t.me/${config.CHANNEL_USERNAME.replace('@', '')}`
           }
-        ],
-        [
-          {
-            text: '❓ Yordam',
-            callback_data: 'help'
-          }
-        ]
-      ]
-    },
-    parse_mode: 'Markdown'
-  };
-  
-  bot.sendMessage(chatId, welcomeMessage, keyboard);
-});
-
-// /add komandasi - yangi e'lon qo'shish
-bot.onText(/\/add/, (msg) => {
-  const chatId = msg.chat.id;
-  const userId = msg.from.id;
-  const username = msg.from.username || 'Foydalanuvchi';
-  
-  const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
-  
-  const keyboard = {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: '➕ E\'lon Qo\'shish',
-            web_app: { url: webAppUrl }
-          }
         ]
       ]
     }
   };
-  
-  bot.sendMessage(chatId, '➕ Yangi e\'lon qo\'shish uchun tugmani bosing:', keyboard);
-});
 
-// /help komandasi - yordam
-bot.onText(/\/help/, (msg) => {
-  const chatId = msg.chat.id;
-  
-  const helpMessage = `
-📢 *E'lon berish Bot - Yordam*
-
-🚀 *Komandalar:*
-/start - Botni boshlash
-/add - Yangi e'lon qo'shish
-/help - Yordam
-
-📌 *Qanday ishlaydi:*
-• E'lon qo'shish va kanalga avtomatik yuborish
-• Barcha e'lonlar @uychinoz kanalida ko'rinadi
-• Rasm, narx, va boshqa ma'lumotlarni kiritish
-
-❓ *Savollar bo'lsa:*
-Admin bilan bog'laning
-  `;
-  
-  const keyboard = {
-    reply_markup: {
-      inline_keyboard: [
-        [
-          {
-            text: '🚀 Boshlash',
-            callback_data: 'start'
-          }
-        ],
-        [
-          {
-            text: '➕ E\'lon Qo\'shish',
-            callback_data: 'add'
-          }
-        ]
-      ]
-    },
-    parse_mode: 'Markdown'
-  };
-  
-  bot.sendMessage(chatId, helpMessage, keyboard);
-});
-
-// Callback query handlers
-bot.on('callback_query', (query) => {
-  const chatId = query.message.chat.id;
-  const userId = query.from.id;
-  const username = query.from.username || 'Foydalanuvchi';
-  const data = query.data;
-
-  if (data === 'start') {
-    const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
-    
-    const welcomeMessage = `
-📢 *E'lon berish Xush Kelibsiz!*
-
-📌 *Xususiyatlar:*
-• E'lon qo'shish va kanalga avtomatik yuborish
-• Barcha e'lonlar kanalda ko'rinadi
-    `;
-    
-    const keyboard = {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '🚀 E\'lon Qo\'shish',
-              web_app: { url: webAppUrl }
-            }
-          ],
-          [
-            {
-              text: '📢 Kanalga Kirish',
-              url: `https://t.me/${config.CHANNEL_USERNAME.replace('@', '')}`
-            }
-          ],
-          [
-            {
-              text: '❓ Yordam',
-              callback_data: 'help'
-            }
-          ]
-        ]
-      },
-      parse_mode: 'Markdown'
-    };
-    
-    bot.editMessageText(welcomeMessage, {
-      chat_id: chatId,
-      message_id: query.message.message_id,
-      reply_markup: keyboard.reply_markup,
-      parse_mode: 'Markdown'
-    });
-  } else if (data === 'add') {
-    const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
-    
-    const welcomeMessage = `
-📢 *E'lon berish Xush Kelibsiz!*
-
-📌 *Xususiyatlar:*
-• E'lon qo'shish va kanalga avtomatik yuborish
-• Barcha e'lonlar kanalda ko'rinadi
-    `;
-    
-    const keyboard = {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '➕ E\'lon Qo\'shish',
-              web_app: { url: webAppUrl }
-            }
-          ],
-          [
-            {
-              text: '📢 Kanalga Kirish',
-              url: `https://t.me/${config.CHANNEL_USERNAME.replace('@', '')}`
-            }
-          ]
-        ]
-      },
-      parse_mode: 'Markdown'
-    };
-    
-    bot.editMessageText(welcomeMessage, {
-      chat_id: chatId,
-      message_id: query.message.message_id,
-      reply_markup: keyboard.reply_markup,
-      parse_mode: 'Markdown'
-    });
-  } else if (data === 'add') {
-    const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}&page=add`;
-    
-    const keyboard = {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '➕ E\'lon Qo\'shish',
-              web_app: { url: webAppUrl }
-            }
-          ]
-        ]
-      }
-    };
-    
-    bot.editMessageText('➕ Yangi e\'lon qo\'shish uchun tugmani bosing:', {
-      chat_id: chatId,
-      message_id: query.message.message_id,
-      reply_markup: keyboard.reply_markup
-    });
-  } else if (data === 'help') {
-    const helpMessage = `
-📢 *E'lon berish Bot - Yordam*
-
-🚀 *Komandalar:*
-/start - Botni boshlash
-/add - Yangi e'lon qo'shish
-/help - Yordam
-
-📌 *Qanday ishlaydi:*
-• E'lon qo'shish va kanalga avtomatik yuborish
-• Barcha e'lonlar @uychinoz kanalida ko'rinadi
-• Rasm, narx, va boshqa ma'lumotlarni kiritish
-
-❓ *Savollar bo'lsa:*
-Admin bilan bog'laning
-    `;
-    
-    const keyboard = {
-      reply_markup: {
-        inline_keyboard: [
-          [
-            {
-              text: '🚀 Boshlash',
-              callback_data: 'start'
-            }
-          ],
-          [
-            {
-              text: '➕ E\'lon Qo\'shish',
-              callback_data: 'add'
-            }
-          ]
-        ]
-      },
-      parse_mode: 'Markdown'
-    };
-    
-    bot.editMessageText(helpMessage, {
-      chat_id: chatId,
-      message_id: query.message.message_id,
-      reply_markup: keyboard.reply_markup,
-      parse_mode: 'Markdown'
-    });
-  }
-  
-  bot.answerCallbackQuery(query.id);
+  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun OPEN tugmasini bosing:', keyboard);
 });
 
 // Xatolikni qayta ishlash

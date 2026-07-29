@@ -26,7 +26,7 @@ function initDatabase() {
       description TEXT,
       price INTEGER NOT NULL,
       currency TEXT DEFAULT 'UZS',
-      city TEXT NOT NULL,
+      address TEXT,
       location_type TEXT,
       house_type TEXT,
       area REAL,
@@ -63,22 +63,22 @@ function initDatabase() {
 const House = {
   create: (houseData) => {
     return new Promise((resolve, reject) => {
-      const { 
-        title, description, price, currency, city, location_type, house_type, area, 
+      const {
+        title, description, price, currency, address, location_type, house_type, area,
         floor, total_floors, condition, furniture, utilities, year_built, garage,
-        rooms, phone, image_url, images, additional_info, expiration_date, user_id, username, telegram_username 
+        rooms, phone, image_url, images, additional_info, expiration_date, user_id, username, telegram_username
       } = houseData;
       const query = `
         INSERT INTO houses (
-          title, description, price, currency, city, location_type, house_type, area,
+          title, description, price, currency, address, location_type, house_type, area,
           floor, total_floors, condition, furniture, utilities, year_built, garage,
           rooms, phone, image_url, images, additional_info, expiration_date, user_id, username, telegram_username
         )
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       `;
-      
+
       db.run(query, [
-        title, description, price, currency, city, location_type, house_type, area,
+        title, description, price, currency, address, location_type, house_type, area,
         floor, total_floors, condition, furniture, utilities, year_built, garage,
         rooms, phone, image_url, images ? JSON.stringify(images) : null, additional_info, expiration_date, user_id, username, telegram_username
       ], function(err) {

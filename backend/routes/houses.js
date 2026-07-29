@@ -7,7 +7,7 @@ const { postToChannel } = require('../bot');
 router.post('/', async (req, res) => {
   try {
     const { 
-      title, description, price, currency, city, location_type, house_type, area,
+      title, description, price, currency, address, location_type, house_type, area,
       floor, total_floors, condition, furniture, utilities, year_built, garage,
       rooms, phone, image_url, images, additional_info, expiration_date, user_id, username, telegram_username 
     } = req.body;
@@ -24,7 +24,7 @@ router.post('/', async (req, res) => {
       description,
       price: parseInt(price),
       currency: currency || 'UZS',
-      city,
+      address,
       location_type: location_type || null,
       house_type: house_type || null,
       area: area ? parseFloat(area) : null,

@@ -166,7 +166,7 @@ if (addHouseForm) {
             description: document.getElementById('house-description').value,
             price: document.getElementById('house-price').value,
             currency: document.getElementById('house-currency').value,
-            city: document.getElementById('house-city').value,
+            address: document.getElementById('house-city').value,
             location_type: document.getElementById('house-location-type').value,
             house_type: document.getElementById('house-type').value,
             area: document.getElementById('house-area').value,
