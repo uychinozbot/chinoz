@@ -62,8 +62,8 @@ async function postToChannelInternal(house) {
 
     const images = house.images ? (typeof house.images === 'string' ? JSON.parse(house.images) : house.images) : [];
 
-    if (images.length > 0) {
-      // Send all images with title first (no clickable links)
+    if (images.length > 1) {
+      // Multiple images: send all with title first, then first image with details
       const allImages = images.map(url => ({
         type: 'photo',
         media: url,
@@ -77,8 +77,14 @@ async function postToChannelInternal(house) {
         caption: detailsCaption,
         parse_mode: 'Markdown'
       });
+    } else if (images.length === 1) {
+      // Single image: send once with title + details
+      await bot.sendPhoto(config.CHANNEL_USERNAME, images[0], {
+        caption: `${titleCaption}\n\n${detailsCaption}`,
+        parse_mode: 'Markdown'
+      });
     } else if (house.image_url) {
-      // Send single image if only one
+      // Send single image if only one (legacy support)
       await bot.sendPhoto(config.CHANNEL_USERNAME, house.image_url, {
         caption: `${titleCaption}\n\n${detailsCaption}`,
         parse_mode: 'Markdown'
