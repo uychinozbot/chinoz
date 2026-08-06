@@ -149,8 +149,6 @@ bot.on('callback_query', async (query) => {
   const username = query.from.username;
 
   if (query.data === 'check_subscription') {
-    await bot.answerCallbackQuery(query.id);
-
     const isSubscribed = await checkSubscription(userId);
 
     if (isSubscribed) {
@@ -168,6 +166,7 @@ bot.on('callback_query', async (query) => {
         message_id: query.message.message_id,
         reply_markup: webAppKeyboard
       });
+      await bot.answerCallbackQuery(query.id);
     } else {
       // Obuna bo'lmagan - xabar berish
       await bot.answerCallbackQuery(query.id, { text: '❌ Siz kanalga obuna bo\'lmagansiz', show_alert: true });
