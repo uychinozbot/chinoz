@@ -170,7 +170,7 @@ bot.on('callback_query', async (query) => {
       });
     } else {
       // Obuna bo'lmagan - xabar berish
-      await bot.answerCallbackQuery(query.id, { text: '❌ Siz hali kanalga obuna bo\'lmadingiz', show_alert: true });
+      await bot.answerCallbackQuery(query.id, { text: '❌ Siz kanalga obuna bo\'lmagansiz', show_alert: true });
     }
   }
 });
