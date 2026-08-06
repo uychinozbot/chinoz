@@ -6,6 +6,17 @@ const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
 
 console.log('Bot ishga tushdi...');
 
+// Kanal obunani tekshirish funksiyasi
+async function checkSubscription(userId) {
+  try {
+    const chatMember = await bot.getChatMember(config.CHANNEL_USERNAME, userId);
+    return ['member', 'administrator', 'creator'].includes(chatMember.status);
+  } catch (error) {
+    console.error('Obuna tekshirish xatosi:', error);
+    return false;
+  }
+}
+
 // Queue tizimi - xabarlar aralashib ketmasligi uchun
 let postQueue = [];
 let isProcessing = false;
@@ -90,22 +101,72 @@ async function postToChannelInternal(house) {
 module.exports = { bot, postToChannel };
 
 // /start komandasi
-bot.onText(/\/start/, (msg) => {
+bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
   const username = msg.from.username;
 
-  const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}`;
+  const isSubscribed = await checkSubscription(userId);
 
-  const webAppKeyboard = {
-    inline_keyboard: [
-      [{ text: '🏠 E\'lon qo\'shish', web_app: { url: webAppUrl } }]
-    ]
-  };
+  if (isSubscribed) {
+    // Obuna bo'lgan - e'lon qo'shish tugmasini ko'rsatish
+    const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}`;
 
-  bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun tugmani bosing:', {
-    reply_markup: webAppKeyboard
-  });
+    const webAppKeyboard = {
+      inline_keyboard: [
+        [{ text: '🏠 E\'lon qo\'shish', web_app: { url: webAppUrl } }]
+      ]
+    };
+
+    bot.sendMessage(chatId, '📢 E\'lon qo\'shish uchun tugmani bosing:', {
+      reply_markup: webAppKeyboard
+    });
+  } else {
+    // Obuna bo'lmagan - kanalga obuna bo'lish tugmasini ko'rsatish
+    const subscribeKeyboard = {
+      inline_keyboard: [
+        [{ text: '📢 Kanalga obuna bo\'lish', url: `https://t.me/${config.CHANNEL_USERNAME.replace('@', '')}` }],
+        [{ text: '✅ Obunani tekshirish', callback_data: 'check_subscription' }]
+      ]
+    };
+
+    bot.sendMessage(chatId, '👋 Salom! Botdan foydalanish uchun avval kanalga obuna bo\'ling:', {
+      reply_markup: subscribeKeyboard
+    });
+  }
+});
+
+// Callback query handler - obunani tekshirish tugmasi
+bot.on('callback_query', async (query) => {
+  const chatId = query.message.chat.id;
+  const userId = query.from.id;
+  const username = query.from.username;
+
+  if (query.data === 'check_subscription') {
+    await bot.answerCallbackQuery(query.id);
+
+    const isSubscribed = await checkSubscription(userId);
+
+    if (isSubscribed) {
+      // Obuna bo'lgan - e'lon qo'shish tugmasini ko'rsatish
+      const webAppUrl = `${config.WEB_APP_URL}?user_id=${userId}&username=${username}`;
+
+      const webAppKeyboard = {
+        inline_keyboard: [
+          [{ text: '🏠 E\'lon qo\'shish', web_app: { url: webAppUrl } }]
+        ]
+      };
+
+      await bot.editMessageText('✅ Siz kanalga obuna bo\'ldingiz! E\'lon qo\'shish uchun tugmani bosing:', {
+        chat_id: chatId,
+        message_id: query.message.message_id,
+        reply_markup: webAppKeyboard
+      });
+    } else {
+      // Obuna bo'lmagan - xabar berish
+      await bot.answerCallbackQuery(query.id, { text: '❌ Siz hali kanalga obuna bo\'lmadingiz', show_alert: true });
+    }
+  }
 });
 
 // Xatolikni qayta ishlash
