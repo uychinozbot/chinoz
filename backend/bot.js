@@ -78,9 +78,9 @@ async function postToChannelInternal(house) {
         parse_mode: 'Markdown'
       });
     } else if (images.length === 1) {
-      // Single image: send once with title + details
+      // Single image: send once with details (includes title)
       await bot.sendPhoto(config.CHANNEL_USERNAME, images[0], {
-        caption: `${titleCaption}\n\n${detailsCaption}`,
+        caption: detailsCaption,
         parse_mode: 'Markdown'
       });
     } else if (house.image_url) {
