@@ -1,8 +1,16 @@
 const TelegramBot = require('node-telegram-bot-api');
 const config = require('./config');
 
-// Botni yaratish
-const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: true });
+// Botni yaratish (webhook bilan)
+const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: false });
+
+// Webhookni o'rnatish
+const webhookUrl = `${config.WEB_APP_URL}/webhook`;
+bot.setWebHook(webhookUrl).then(() => {
+  console.log('Webhook o\'rnatildi:', webhookUrl);
+}).catch(err => {
+  console.error('Webhook o\'rnatish xatosi:', err);
+});
 
 console.log('Bot ishga tushdi...');
 

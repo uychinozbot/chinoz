@@ -56,6 +56,13 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, '../frontend/index.html'));
 });
 
+// Webhook endpoint for Telegram bot
+app.post('/webhook', (req, res) => {
+  const { bot } = require('./bot');
+  bot.processUpdate(req.body);
+  res.sendStatus(200);
+});
+
 app.listen(config.PORT, () => {
   console.log(`Server ${config.PORT} portida ishlamoqda`);
   console.log(`Web App URL: ${config.WEB_APP_URL}`);
