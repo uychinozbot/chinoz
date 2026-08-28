@@ -6,7 +6,13 @@ const bot = new TelegramBot(config.TELEGRAM_BOT_TOKEN, { polling: false });
 
 // Webhookni o'rnatish
 const webhookUrl = `${config.WEB_APP_URL}/webhook`;
-bot.setWebHook(webhookUrl).then(() => {
+
+// Avval mavjud webhook'ni o'chirish
+bot.deleteWebHook().then(() => {
+  console.log('Eski webhook o\'chirildi');
+  // Yangi webhook'ni o'rnatish
+  return bot.setWebHook(webhookUrl);
+}).then(() => {
   console.log('Webhook o\'rnatildi:', webhookUrl);
 }).catch(err => {
   console.error('Webhook o\'rnatish xatosi:', err);
