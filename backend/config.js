@@ -11,7 +11,7 @@ module.exports = {
   PORT: process.env.PORT || 3000,
   
   // Channel username
-  CHANNEL_USERNAME: '@uychinoz',
+  CHANNEL_USERNAME: '@uychinozbot',
   
   // Database
   DB_PATH: './database/houses.db'
