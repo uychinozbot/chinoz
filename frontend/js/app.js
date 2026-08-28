@@ -105,8 +105,9 @@ if (addHouseForm) {
         
         // Phone number validation
         const phone = document.getElementById('house-phone').value;
+        const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
         const phoneRegex = /^\+998\d{9}$/;
-        if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+        if (!phoneRegex.test(cleanPhone)) {
             missingFields.push('Telefon raqam noto\'g\'ri kiritildi. Format: +998 90 123 45 67');
         }
         
