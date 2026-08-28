@@ -51,16 +51,25 @@ async function postToChannel(house) {
 // Kanalga e'lon yuborish funksiyasi (asosiy)
 async function postToChannelInternal(house) {
   try {
+    console.log('Kanalga yuborilayotgan house:', JSON.stringify(house, null, 2));
+    
     const titleCaption = `📢 *${house.title}*`;
     
-    const detailsCaption = `📢 *${house.title}*
+    let detailsCaption = `📢 *${house.title}*
 
 💰 Narx: ${house.currency === 'USD' ? '$' : ''}${house.price}${house.currency === 'UZS' ? " so'm" : ''}${house.address ? `\n📍 Manzil: ${house.address}` : ''}${house.location_type ? `\n🏢 Joylashuv: ${house.location_type === 'shahar-atrofi' ? 'Shaxar atrofi' : house.location_type}` : ''}${house.house_type ? `\n🏠 Turi: ${house.house_type === 'uy' ? 'Dom' : house.house_type}` : ''}${house.area ? `\n📐 Maydon: ${house.area} m²` : ''}${house.rooms ? `\n🏠 Xonalar: ${house.rooms}` : ''}${house.floor ? `\n🏢 Qavat ${house.floor} Umumiy Qavat ${house.total_floors}` : ''}${house.condition ? `\n🔧 Holati: ${house.condition}` : ''}${house.furniture ? `\n🪑 Uy jihozlar: ${house.furniture}` : ''}${house.utilities ? `\n⚡ Komunal: ${house.utilities}` : ''}${house.year_built ? `\n📅 Qurilgan yili: ${house.year_built}` : ''}${house.garage ? `\n🚗 Garaj: ${house.garage === 'bor' ? 'Bor' : 'Yo\'q'}` : ''}${house.description ? `\n📝 Tavsif: ${house.description}` : ''}${house.created_at ? `\n📅 Joylangan: ${new Date(house.created_at).toLocaleDateString('uz-UZ')} ${new Date(house.created_at).toLocaleTimeString('uz-UZ')}` : ''}${house.expiration_date ? `\n⏰ Tugash sanasi: ${new Date(house.expiration_date).toLocaleDateString('uz-UZ')}` : '\n⏰ Muddati: Cheksiz'}
 
 📞 Telefon: [${house.phone}](tel:${house.phone})
 👤 E'lon qo'shgan: @${house.telegram_username || house.username || 'Foydalanuvchi'}`;
 
+    // Telegram caption limit 1024 characters
+    if (detailsCaption.length > 1024) {
+      detailsCaption = detailsCaption.substring(0, 1020) + '...';
+      console.log('Caption uzunligi limitdan oshdi, qisqartirildi');
+    }
+
     const images = house.images ? (typeof house.images === 'string' ? JSON.parse(house.images) : house.images) : [];
+    console.log('Rasmlar soni:', images.length);
 
     if (images.length > 1) {
       // Multiple images: send all with title first, then first image with details
