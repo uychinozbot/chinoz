@@ -103,6 +103,13 @@ if (addHouseForm) {
             missingFields.push('Rasm yuklanishi shart (kamida bitta rasm)');
         }
         
+        // Phone number validation
+        const phone = document.getElementById('house-phone').value;
+        const phoneRegex = /^\+998\d{9}$/;
+        if (!phoneRegex.test(phone.replace(/\s/g, ''))) {
+            missingFields.push('Telefon raqam noto\'g\'ri kiritildi. Format: +998 90 123 45 67');
+        }
+        
         if (missingFields.length > 0) {
             alert('❌ Quyidagi maydonlarni to\'ldiring:\n\n' + missingFields.map(f => '• ' + f).join('\n'));
             return;
