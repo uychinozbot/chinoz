@@ -110,6 +110,45 @@ if (addHouseForm) {
             missingFields.push('Telefon raqam noto\'g\'ri kiritildi. Format: +998 90 123 45 67');
         }
         
+        // Price validation
+        const price = document.getElementById('house-price').value;
+        if (price && parseFloat(price) <= 0) {
+            missingFields.push('Narx musbat son bo\'lishi kerak');
+        }
+        
+        // Area validation
+        const area = document.getElementById('house-area').value;
+        if (area && parseFloat(area) <= 0) {
+            missingFields.push('Maydon musbat son bo\'lishi kerak');
+        }
+        
+        // Rooms validation
+        const rooms = document.getElementById('house-rooms').value;
+        if (rooms && parseInt(rooms) <= 0) {
+            missingFields.push('Xonalar soni musbat son bo\'lishi kerak');
+        }
+        
+        // Floor validation
+        const floor = document.getElementById('house-floor').value;
+        if (floor && parseInt(floor) <= 0) {
+            missingFields.push('Qavat musbat son bo\'lishi kerak');
+        }
+        
+        // Total floors validation
+        const totalFloors = document.getElementById('house-total-floors').value;
+        if (totalFloors && parseInt(totalFloors) <= 0) {
+            missingFields.push('Umumiy qavatlar musbat son bo\'lishi kerak');
+        }
+        
+        // Year validation
+        const year = document.getElementById('house-year').value;
+        if (year) {
+            const currentYear = new Date().getFullYear();
+            if (parseInt(year) < 1900 || parseInt(year) > currentYear + 1) {
+                missingFields.push('Qurilgan yili noto\'g\'ri kiritildi. 1900 dan ' + (currentYear + 1) + ' gacha bo\'lishi kerak');
+            }
+        }
+        
         if (missingFields.length > 0) {
             alert('❌ Quyidagi maydonlarni to\'ldiring:\n\n' + missingFields.map(f => '• ' + f).join('\n'));
             return;
