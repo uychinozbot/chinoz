@@ -110,7 +110,7 @@ module.exports = { bot, postToChannel };
 bot.onText(/\/start/, async (msg) => {
   const chatId = msg.chat.id;
   const userId = msg.from.id;
-  const username = msg.from.username;
+  const username = msg.from.username || `user_${userId}`;
 
   const isSubscribed = await checkSubscription(userId);
 
@@ -146,7 +146,7 @@ bot.onText(/\/start/, async (msg) => {
 bot.on('callback_query', async (query) => {
   const chatId = query.message.chat.id;
   const userId = query.from.id;
-  const username = query.from.username;
+  const username = query.from.username || `user_${userId}`;
 
   if (query.data === 'check_subscription') {
     const isSubscribed = await checkSubscription(userId);
