@@ -42,7 +42,7 @@ function initTelegram() {
             id: user.id,
             first_name: user.first_name,
             last_name: user.last_name,
-            username: user.username,
+            username: user.username || `${user.first_name}${user.last_name ? ' ' + user.last_name : ''}`,
             language_code: user.language_code
         };
     }
